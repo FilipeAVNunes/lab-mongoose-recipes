@@ -4,16 +4,32 @@ const data = require('./data'); // Import of the data from './data.json'
 
 const MONGODB_URI = 'mongodb://localhost/recipeApp';
 
-// Connection to the database "recipeApp"
+//const Recipe = mongoose.model('Recipe', recipeSchema);
+
 mongoose
   .connect(MONGODB_URI, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-  .then(() => {
+  .then(x => {
     console.log(`Connected to the database: "${x.connections[0].name}"`);
-    // Run your code here, after you have insured that the connection was made
+    return Recipe.create({
+      title: 'Receita',
+      level: 'Easy Peasy',
+      ingredients: ['nothing'],
+      cuisine: 'every cuisine',
+      dishType: 'Other',
+      duration: 0,
+      creator: 'me'
+    });
+  })
+  .then(recipe => {
+    console.log(recipe.title);
+    return Recipe.insertMany(data);
+  })
+  .then(() => {
+    return Recipe.updateOne({ title: 'Rigatoni alla Genovese' }, { duration: 100 });
   })
   .catch(error => {
     console.error('Error connecting to the database', error);
